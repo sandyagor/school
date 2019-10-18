@@ -1,0 +1,57 @@
+import request from '../request'
+import requestUrl from '../requestUrl'
+import requestParam from '../requestParam'
+import isInteger from 'lodash/isInteger'
+
+// 获取列表
+export function list (params) {
+  return request({
+    url: requestUrl('/${moduleName}/${pathName}'),
+    method: 'get',
+    params: requestParam(params, 'get')
+  })
+}
+
+// 获取信息
+export function info (id) {
+  return request({
+    url: requestUrl('/${moduleName}/${pathName}/id'),
+    method: 'get',
+    params: requestParam({}, 'get')
+  })
+}
+
+// 添加
+export function add (params) {
+  return request({
+    url: requestUrl('/${moduleName}/${pathName}'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 修改
+export function update (id,params) {
+  return request({
+    url: requestUrl('/${moduleName}/${pathName}/id'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 批量删除
+export function del (params) {
+  return request({
+    url: requestUrl('/${moduleName}/${pathName}/batch'),
+    method: 'post',
+    data: requestParam(params, 'post', false)
+  })
+  
+// 删除
+export function del (id) {
+  return request({
+    url: requestUrl('/${moduleName}/${pathName}/id'),
+    method: 'delete',
+    data: requestParam({}, 'delete', false)
+  })
+}

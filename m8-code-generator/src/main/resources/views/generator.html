@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>按照目录-代码生成器</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/font-awesome.min.css">
+<link rel="stylesheet" href="plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="css/main.css">
+<script src="libs/jquery.min.js"></script>
+<script src="plugins/layer/layer.js"></script>
+<script src="libs/bootstrap.min.js"></script>
+<script src="libs/vue.min.js"></script>
+<script src="plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="js/common.js"></script>
+</head>
+<body>
+	<div class="panel panel-default" id="rrapp">
+		<div class="panel-heading">元数据</div>
+		<div class="grid-btn">
+			<table style="margin: 10px 0px;">
+				<tr>
+					<td class="form-group col-sm-2"><input type="text" class="form-control" v-model="q.catalogName" @keyup.enter="query" placeholder="名称"></td>
+					<td><a class="btn btn-default" @click="query">查询</a></td>
+					<td colspan="2"></td>
+				</tr>
+				<tr>
+					<td class="form-group col-sm-2">
+						<input type="text" class="form-control" v-model.trim="q.packageName" placeholder="包名:如com.ccssoft.demo">
+					</td>
+					<td class="form-group col-sm-2">放入一个模块？ 
+						<input v-model="q.selected" id="one" value="1" type="radio" @click="inOne()"> 
+						<label for="是">是</label> 
+						<input v-model="q.selected" id="two" value="0" type="radio" @click="notOne()"> 
+						<label for="否">否</label>
+					</td>
+					<td class="form-group col-sm-2"><input type="text" class="form-control module_name" v-model.trim="q.moduleName" v-show="q.bool" placeholder="名称"></td>
+					<td>
+						<a class="btn btn-primary" @click="generator"><i class="fa fa-file-code-o"></i>&nbsp;生成代码</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<table id="jqGrid"></table>
+		<div id="jqGridPager"></div>
+	</div>
+	<script src="js/generator.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.com.ccssoft.dao.SysGeneratorDao">
+	<select id="queryList" resultType="map">
+		select table_name tableName, engine, table_comment tableComment, create_time createTime from information_schema.tables 
+			where table_schema = (select database()) 
+		<if test="tableName != null and tableName.trim() != ''">
+			and table_name like concat('%', #{tableName}, '%') 
+		</if>
+		order by create_time desc
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="catelogList" resultType="map">
+		select  distinct a.`code` catalogCode,a.`name` catalogName,c.dictionaryname catalogTypeName,a.`note` catalogNote 
+		from me_catalog a join me_object b on a.`code`=b.`catalog_code` 
+		join me_object_attr d on d.`object_code`=b.`code` 
+		join (select a.`code` dictionarycode,b.`content` dictionaryname,b.`item` typevalue from me_dictionary a  
+		join me_dictionary_item b on a.`code`=b.`dictionary_code` where (a.`code`='me_catlog@catalog_type' or a.code='ME_CATLOG@CATALOG_TYPE') and b.`status`='1' ) c 
+		on a.`catalog_type`=c.typevalue where 1=1
+		<if test="catalogName != null and catalogName.trim() != ''">
+			and (a.name like concat('%', #{catalogName}, '%') or a.code like concat('%', #{catalogName}, '%'))
+		</if>
+				<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryTotal" resultType="int">
+		select count(*) from information_schema.tables where table_schema = (select database())
+		<if test="tableName != null and tableName.trim() != ''">
+			and table_name like concat('%', #{tableName}, '%') 
+		</if> 
+	</select> 
+	
+	<select id="catalogTotal" resultType="int">
+		select count(1) from (
+		select  distinct a.`code` catalogcode,a.`name` catalogname,c.dictionaryname catalogtypename,a.`note` catalognote 
+		from me_catalog a join me_object b on a.`code`=b.`catalog_code` 
+		join me_object_attr d on d.`object_code`=b.`code` 
+		join (select a.`code` dictionarycode,b.`content` dictionaryname,b.`item` typevalue from me_dictionary a  
+		join me_dictionary_item b on a.`code`=b.`dictionary_code` where (a.`code`='me_catlog@catalog_type' or a.code='ME_CATLOG@CATALOG_TYPE') and b.`status`='1' ) c 
+		on a.`catalog_type`=c.typevalue where 1=1 
+		<if test="catalogName != null and catalogName.trim() != ''">
+			and (a.name like concat('%', #{catalogName}, '%') or a.code like concat('%', #{catalogName}, '%'))
+		</if>
+		) d
+	</select>
+	
+	<select id="queryTable" resultType="map">
+		select table_name tableName, engine, table_comment tableComment, create_time createTime from information_schema.tables 
+			where table_schema = (select database()) and table_name = #{tableName}
+	</select> 
+	
+	<select id="queryColumns" resultType="map">
+		select column_name columnName, data_type dataType, column_comment columnComment, column_key columnKey, extra from information_schema.columns
+ 			where table_name = #{tableName} and table_schema = (select database()) order by ordinal_position
+	</select>
+	
+	<select id="queryCatalog" resultType="map">
+		select a.`code` catalogCode,a.`name` catalogName,b.`htable_name` objectCode,b.`name` objectName,
+		c.`code` objAttrCode,c.`attr_desc` objectAttrName,c.`attr_name` objectAttrCode,c.`datalength` datatypeLength,
+		d.datatypename datatypeName,c.ispk*1 pkey,c.ver objectAttrVer,b.`code` baseObjectCode
+		from me_catalog a 
+		join me_object b on a.`code`=b.`catalog_code` -- 元数据所有对象
+		join me_object_attr c on b.`code`=c.`object_code` -- 元数据所有对象的属性
+		join (select b.`content` as datatypename,b.`item` as datatype from me_dictionary a 
+		join me_dictionary_item b on a.`code`=b.`dictionary_code`
+		where (a.code='me_object_attr@datatype' or a.code='ME_OBJECT_ATTR@DATATYPE') and a.`status`='1' and b.`status`='1' ) d on d.datatype=c.`datatype`
+		where a.`code`=#{catalogCode} and b.`status`='1' and c.`datatype` is not null order by c.seqno  asc
+	</select>
+	<select id="haveTables" resultType="int">
+		select count(1) from information_schema.`tables`where table_name in('me_catalog','me_object','me_object_attr','me_dictionary_item','me_dictionary') 
+		and table_schema = (select database())
+	</select>
+</mapper>

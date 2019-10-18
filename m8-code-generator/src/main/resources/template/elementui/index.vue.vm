@@ -1,0 +1,167 @@
+<template>
+    <div class="app-container">
+        <div flex="main:justify">
+            <div class="search-input" flex="">
+                <el-input v-model="searchKey" placeholder="参数名" clearable @keyup.enter.native="getDataList()"></el-input>
+                <el-button class="wireframe defaultBtn ml10 " @click="getDataList()">刷新</el-button>
+            </div>
+            <div >
+                <div>
+                    <el-button  class=" defaultBtn  "  type="primary" @click="addOrUpdateHandle()">新增</el-button>
+                    <el-button class=" defaultBtn ml10 "  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+                </div>
+            </div>
+        </div>
+        <div class="mt20">
+        <el-table
+                :data="dataList"
+                @selection-change="selectionChangeHandle"
+                style="width: 100%;">
+            <el-table-column
+                    type="selection"
+                    header-align="center"
+                    align="center"
+                    width="50">
+            </el-table-column>
+            #foreach($column in $columns)
+            <el-table-column
+                    prop="${column.attrname}"
+                    header-align="center"
+                    align="center"
+                    label="${column.comments}">
+            </el-table-column>
+            #end
+            <el-table-column
+                    fixed="right"
+                    header-align="center"
+                    align="center"
+                    width="150"
+                    label="操作">
+                <template slot-scope="scope">
+                    <span @click="addOrUpdateHandle(scope.row.${pk.attrname})" class="blue-color">编辑</span>
+                    <span class="mid ml10">|</span>
+                    <span class="blue-color ml10"  @click="deleteHandle(scope.row.${pk.attrname})">删除</span>
+                </template>
+            </el-table-column>
+        </el-table>
+        </div>
+        <el-pagination
+                class='fr'
+                @size-change="sizeChangeHandle"
+                @current-change="currentChangeHandle"
+                :current-page="pageIndex"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="pageSize"
+                :total="totalPage"
+                layout="total, sizes, prev, pager, next, jumper">
+        </el-pagination>
+        <!-- 弹窗, 新增 / 修改 -->
+        <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    </div>
+</template>
+
+<script>
+    import AddOrUpdate from './add-or-update'
+    import {mapActions, mapGetters } from 'vuex'
+
+    export default {
+        data () {
+            return {
+                searchKey:'',
+                dataList: [],
+                pageIndex: 1,
+                pageSize: 10,
+                totalPage: 0,
+                dataListSelections: [],
+                addOrUpdateVisible: false
+            }
+        },
+        components: {
+            AddOrUpdate
+        },
+        created () {
+            this.getDataList()
+        },
+        computed: {
+            ...mapGetters([
+                'elements',
+                'permissions'
+            ])
+        },
+        methods: {
+            // 获取数据列表
+            getDataList () {
+                var params = {
+                    page: this.pageIndex,
+                    limit: this.pageSize,
+                    key: this.searchKey
+                }
+                let _this = this
+                _this.$http('get',httpConfig.Microservice+'/${moduleName}/${pathName}',params,{})
+                    .then(response => {
+                        if (response && response.code === 0) {
+                            _this.dataList = response.page.list
+                            _this.totalPage = response.page.totalCount
+                        } else {
+                            _this.dataList = []
+                            _this.totalPage = 0
+                        }
+                    })
+            },
+            // 每页数
+            sizeChangeHandle (val) {
+                this.pageSize = val
+                this.pageIndex = 1
+                this.getDataList()
+            },
+            // 当前页
+            currentChangeHandle (val) {
+                this.pageIndex = val
+                this.getDataList()
+            },
+            // 多选
+            selectionChangeHandle (val) {
+                this.dataListSelections = val
+            },
+            // 新增 / 修改
+            addOrUpdateHandle (id) {
+                this.addOrUpdateVisible = true
+                this.$nextTick(() => {
+                    this.$refs.addOrUpdate.init(id)
+                })
+            },
+            // 删除
+            deleteHandle (id) {
+                var ids = id ? [id] : this.dataListSelections.map(item => {
+                    return item.${pk.attrname}
+                })
+        #[[this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {]]#
+          confirmButtonText: '确定',
+              cancelButtonText: '取消',
+                    type: 'warning'
+            }).then(() => {
+
+                    let _this = this
+                    _this.$http('delete',httpConfig.Microservice+'/${moduleName}/${pathName}/'+ids,{},{})
+                        .then(response => {
+                            if (response && response.code === 0) {
+                                _this.$message({
+                                    message: '操作成功',
+                                    type: 'success',
+                                    duration: 1500,
+                                    onClose: () => {
+                                        _this.getDataList()
+                                    }
+                                })
+                            } else {
+                            #[[this.$message.error(response.msg)]]#
+                            }
+                        })
+
+
+
+                })
+            }
+        }
+    }
+</script>

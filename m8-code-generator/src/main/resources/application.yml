@@ -1,0 +1,57 @@
+server:
+  tomcat:
+    max-threads: 10
+    min-spare-threads: 10
+  port: 8080
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    druid:
+      first:
+        sourceName: m8cmp_alpha_microservice
+        url: jdbc:mysql://172.18.1.249:3316/m8cmp_alpha_microservice?useUnicode=true&characterEncoding=UTF-8
+        username: m8cmp_alpha
+        password: ccssoft
+      second:
+        sourceName: m8cmp_alpha_business
+        url: jdbc:mysql://172.18.1.205:3306/m8cmp_alpha_operation?useUnicode=true&characterEncoding=UTF-8
+        username: m8cmp_alpha
+        password: ccssoft
+      third:
+        sourceName: dev_m8cmp_flow
+        url: jdbc:mysql://172.18.1.205:3306/dev_m8cmp_flow?useUnicode=true&characterEncoding=UTF-8
+        username: dev_m8cmp
+        password: dev_m8cmp
+      fourth:
+        sourceName: dev_m8cmp_maintenance
+        url: jdbc:mysql://172.18.1.205:3306/dev_m8cmp_maintenance?useUnicode=true&characterEncoding=UTF-8
+        username: dev_m8cmp
+        password: dev_m8cmp
+      fifth:
+        sourceName: dev_m8cmp_resource
+        url: jdbc:mysql://172.18.1.205:3306/dev_m8cmp_resource?useUnicode=true&characterEncoding=UTF-8
+        username: dev_m8cmp
+        password: dev_m8cmp
+      sixth:
+        sourceName: m8cmp_alpha_operation
+        url: jdbc:mysql://172.18.1.249:3316/m8cmp_alpha_operation?useUnicode=true&characterEncoding=UTF-8
+        username: m8cmp_alpha
+        password: ccssoft
+      seventh:
+        sourceName: dev_m8cmp_microservice
+        url: jdbc:mysql://172.17.10.227:9906/dev_m8cmp_microservice?useUnicode=true&characterEncoding=UTF-8
+        username: m8cloud
+        password: 123456
+      eighth:
+        sourceName: dev_m8cmp_operation
+        url: jdbc:mysql://172.18.1.205:3306/dev_m8cmp_operation?useUnicode=true&characterEncoding=UTF-8
+        username: dev_m8cmp
+        password: dev_m8cmp
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  resources:
+    static-locations: classpath:/static/,classpath:/views/
+mybatis:
+  mapperLocations: classpath:mapper/**/*.xml

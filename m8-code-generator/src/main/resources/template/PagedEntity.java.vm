@@ -1,0 +1,42 @@
+package ${package}.${moduleName}.entity.queryEntity;
+
+import java.io.Serializable;
+import com.baomidou.mybatisplus.annotations.TableField;
+import ${package}.${moduleName}.entity.${className}Entity;
+
+import io.swagger.annotations.ApiModelProperty;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public class PagedQuery${className}Entity extends ${className}Entity implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@ApiModelProperty(value = "page", required = false)
+	@TableField(exist=false)
+	private String page;
+	
+	@ApiModelProperty(value = "limit", required = false)
+	@TableField(exist=false)
+	private String limit;
+	
+	public String getPage() {
+		return page;
+	}
+
+	public void setPage(String page) {
+		this.page = page;
+	}
+
+	public String getLimit() {
+		return limit;
+	}
+
+	public void setLimit(String limit) {
+		this.limit = limit;
+	}
+}

@@ -1,0 +1,123 @@
+<template>
+    <el-dialog
+            :title="!dataForm.id ? '新增' : '修改'"
+            :close-on-click-modal="false"
+            :visible.sync="visible">
+        <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+            #foreach($column in $columns)
+            #if($column.columnName != $pk.columnName)
+            <el-form-item label="${column.comments}" prop="${column.attrname}">
+                <el-input v-model="dataForm.${column.attrname}" placeholder="${column.comments}"></el-input>
+            </el-form-item>
+            #end
+            #end
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+      <el-button @click="visible = false">取消</el-button>
+      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+    </span>
+    </el-dialog>
+</template>
+
+<script>
+  import {mapActions, mapGetters } from 'vuex'
+
+    export default {
+        data () {
+            return {
+                visible: false,
+                dataForm: {
+#foreach($column in $columns)
+#if($column.columnName == $pk.columnName)
+            ${column.attrname}: 0,
+#else
+            ${column.attrname}: ''#if($velocityCount != $columns.size()),#end
+
+#end
+#end
+        },
+            dataRule: {
+            #foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+                ${column.attrname}: [
+                    { required: true, message: '${column.comments}不能为空', trigger: 'blur' }
+                ]#if($velocityCount != $columns.size()),#end
+
+#end
+#end
+            }
+        }
+        },
+        methods: {
+            init (id) {
+                this.dataForm.${pk.attrname} = id || 0
+                this.visible = true
+                this.$nextTick(() => {
+                    this.$refs['dataForm'].resetFields()
+                    if (this.dataForm.${pk.attrname}) {
+                        let _this = this
+                        let id=_this.dataForm.${pk.attrname}
+                        _this.$http('get',httpConfig.Microservice+'/admin/${moduleName}/${pathName}/' + (isInteger(id) ? `/${id}` : ''),{},{})
+                            .then(response => {
+                                if (response && response.code === 0) {
+                                #foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+                                        _this.dataForm.${column.attrname} = response.${pathName}.${column.attrname}
+#end
+#end
+                                }
+                            })
+
+                    }
+                })
+            },
+            // 表单提交
+            dataFormSubmit () {
+            #[[this.$refs['dataForm'].validate((valid) => {]]#
+          if (valid) {
+              var params = {
+#foreach($column in $columns)
+#if($column.columnName == $pk.columnName)
+                  '${column.attrname}': this.dataForm.${column.attrname} || undefined,
+#else
+              '${column.attrname}': this.dataForm.${column.attrname}#if($velocityCount != $columns.size()),#end
+
+#end
+#end
+          }
+
+                let method='';
+                let url =''
+                if(!this.dataForm.${pk.attrname}){
+                    method='post'
+                    url='/${moduleName}/${pathName}/save'
+                }else{
+                    method='put'
+                    url='/${moduleName}/${pathName}/update'
+
+                }
+              let _this = this
+              _this.$http(method,httpConfig.Microservice+url,params,{})
+                  .then(response => {
+                      if (response && response.code === 0) {
+                      #[[_this.$message({]]#
+                  message: '操作成功',
+                      type: 'success',
+                              duration: 1500,
+                              onClose: () => {
+                              _this.visible = false
+                    #[[_this.$emit('refreshDataList')]]#
+                          }
+                      })
+                      } else {
+                      #[[_this.$message.error(response.msg)]]#
+                      }
+                    
+                  })
+
+          }
+                })
+            }
+        }
+    }
+</script>

@@ -1,0 +1,34 @@
+package ${package}.${moduleName}.service;
+
+import com.baomidou.mybatisplus.service.IService;
+import com.ccssoft.m8.common.ccssoft.modules.util.PageUtils;
+import ${package}.${moduleName}.entity.${className}Entity;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public interface ${className}Service<${className}Entity> extends IService<${className}Entity> {
+	/**
+	 * 分页查询
+	 * @param params
+	 * @return PageUtils<${className}Entity>
+	 */
+	PageUtils<${className}Entity> queryPage(Map<String, Object> params);
+
+	/**
+	 * 按照提供参数进行模糊查询
+	 * tips:模糊参数为String类型
+	 * @param map
+	 * @return List
+	 */ 
+    List<${className}Entity> queryPageByLike(Map<String, Object> params);
+    
+}
+
