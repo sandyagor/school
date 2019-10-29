@@ -1,5 +1,5 @@
 createdAt: "2019-09-20T09:17:52.000Z"
-updatedAt: "2019-10-29T07:02:32.412Z"
+updatedAt: "2019-10-29T07:37:02.474Z"
 content: '''
   MAVEN仓库推送
   1、第一步
@@ -40,6 +40,7 @@ content: '''
   </properties> 
   
   4、第四步
+  如果使用的IDEA则需要清楚使用的MAVNEN存放的位置
   Maven setting 文件server 节点下配置私服用户信息
   
   <server>
@@ -60,7 +61,7 @@ content: '''
   
 '''
 folder: "54dcc1a9bcbb28ef5156"
-title: "mvn仓库配置"
+title: "MAVEN仓库推送"
 type: "MARKDOWN_NOTE"
 tags: []
 isStarred: false
