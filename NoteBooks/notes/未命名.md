@@ -1,0 +1,13 @@
+自动get set
+<!-- 还要在IDE中安装Lombok插件 -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <optional>true</optional>
+</dependency>
+<!-- 热重新加载 - 在应用程序运行时更改代码后，在IntelliJ中按Ctrl + F9  -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <optional>true</optional>
+</dependency>
