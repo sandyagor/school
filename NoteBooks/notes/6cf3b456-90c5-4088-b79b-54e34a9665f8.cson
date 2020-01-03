@@ -1,0 +1,20 @@
+createdAt: "2019-12-23T02:56:22.516Z"
+updatedAt: "2019-12-23T03:06:20.017Z"
+type: "MARKDOWN_NOTE"
+folder: "54dcc1a9bcbb28ef5156"
+title: "使用代理让MAC间接连接无法使用的VPN"
+tags: []
+content: '''
+  # 使用代理让MAC间接连接无法使用的VPN
+  ## 1 背景
+    公司项目需要使用“深信服”开发的VPN，但是由于VPN服务器的版本过低，只能支持windows客户端连接，导致MAC用户不能顺利连上VPN。
+  ## 2 解决办法
+  ### 2.1 使用windows连接VPN并开放热点
+  ### 2.2 MAC安装虚拟机，windows虚拟机连接上VPN以后再使用端口映射代理
+  ### 2.3 升级服务器版本
+  本例遵循“求人不如求己”的原则，大胆使用第二种方法。（安装win虚拟机并开启端口代理）
+  
+'''
+linesHighlighted: []
+isStarred: false
+isTrashed: false
